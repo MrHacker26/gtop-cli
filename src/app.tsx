@@ -6,12 +6,14 @@ import chalk from 'chalk'
 import Header from './components/header'
 import SystemMetrics from './components/system-metrics'
 import ProcessTable, { type Process } from './components/process-table'
+import { MAX_PROCESSES, REFRESH_INTERVAL } from './lib/constants'
 
 export default function App() {
   const [cpu, setCpu] = useState<number>(0)
   const [memory, setMemory] = useState<{ used: number; total: number }>({ used: 0, total: 1 })
   const [processes, setProcesses] = useState<Process[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(function () {
     const interval = setInterval(async () => {
@@ -19,9 +21,11 @@ export default function App() {
         const [cpuData, memData, procData] = await Promise.all([si.currentLoad(), si.mem(), si.processes()])
 
         setCpu(cpuData.currentLoad)
-        setMemory({ used: memData.active, total: memData.total })
+        setMemory({ used: memData.used, total: memData.total })
 
         const sortedProcesses = procData.list
+          .sort((a, b) => b.cpu - a.cpu)
+          .slice(0, MAX_PROCESSES)
           .map(p => ({
             pid: p.pid,
             user: p.user || 'unknown',
@@ -29,14 +33,14 @@ export default function App() {
             memory: `${p.mem.toFixed(1)}%`,
             command: p.command,
           }))
-          .slice(0, 10)
 
         setProcesses(sortedProcesses)
         setLoading(false)
       } catch (error) {
+        setError('Failed to fetch system data')
         console.error(chalk.red('Error fetching system data:', error))
       }
-    }, 1000)
+    }, REFRESH_INTERVAL)
 
     return () => {
       clearInterval(interval)
@@ -49,6 +53,10 @@ export default function App() {
         <Spinner /> <Text color="cyan">Loading system data...</Text>
       </Text>
     )
+  }
+
+  if (error) {
+    return <Text color="red">❌ {error}</Text>
   }
 
   return (
