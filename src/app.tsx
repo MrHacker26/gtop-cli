@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Box, Text, Newline } from 'ink'
-import BigText from 'ink-big-text'
 import si from 'systeminformation'
 import Spinner from 'ink-spinner'
 import chalk from 'chalk'
-import ProgressBar from './components/progress-bar'
+import Header from './components/header'
+import SystemMetrics from './components/system-metrics'
 
 export default function App() {
   const [cpu, setCpu] = useState<number>(0)
@@ -44,37 +44,9 @@ export default function App() {
 
   return (
     <Box flexDirection="column" padding={1} borderStyle="round" borderColor="green">
-      <Box justifyContent="center">
-        <BigText text="GTop" font="block" />
-      </Box>
-
-      <Text color="greenBright" bold>
-        Terminal System Monitor
-      </Text>
-      <Text dimColor>──────────────────────────────────────────────</Text>
+      <Header />
       <Newline />
-
-      <Box flexDirection="row" justifyContent="space-between" gap={4}>
-        <Box flexDirection="column" width="50%">
-          <Text bold color="yellow">
-            🧠 CPU Usage
-          </Text>
-          <ProgressBar value={cpu} />
-          <Text>{chalk.yellow(cpu.toFixed(1))}%</Text>
-        </Box>
-
-        <Box flexDirection="column" width="50%">
-          <Text bold color="magenta">
-            💾 Memory Usage
-          </Text>
-          <ProgressBar value={(memory.used / memory.total) * 100} />
-          <Text>
-            {chalk.cyan(((memory.used / memory.total) * 100).toFixed(1))}% ({Math.round(memory.used / 1024 / 1024)} MB /{' '}
-            {Math.round(memory.total / 1024 / 1024)} MB)
-          </Text>
-        </Box>
-      </Box>
-
+      <SystemMetrics cpu={cpu} memory={memory} />
       <Newline />
       <Text dimColor>Press Ctrl+C to exit</Text>
     </Box>
