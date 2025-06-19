@@ -1,26 +1,37 @@
 {
   "name": "gtop-cli",
   "description": "A terminal-based system monitor like htop, built with Ink, React, and TypeScript.",
-  "module": "index.ts",
-  "type": "module",
   "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "gtop": "./dist/index.js"
+  },
   "scripts": {
-    "start": "bun run index.ts",
-    "build": "bun build index.ts --outdir dist --target bun",
+    "start": "bun run src/index.tsx",
+    "dev": "bun run --watch src/index.tsx",
+    "build": "tsup",
     "format": "prettier --write .",
     "lint": "eslint . --ext .ts,.tsx"
   },
-  "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@types/bun": "latest",
-    "@types/react": "^19.1.8",
-    "eslint": "^9.29.0",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.2.0",
-    "prettier": "3.5.3",
-    "typescript-eslint": "^8.34.1"
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "ink": "^5.0.0",
+    "ink-big-text": "^2.0.0",
+    "ink-select-input": "^6.0.0",
+    "ink-spinner": "^5.0.0",
+    "react": "^18.3.1",
+    "systeminformation": "^5.23.5"
   },
-  "peerDependencies": {
-    "typescript": "^5"
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@types/react": "^18.3.11",
+    "bun-types": "latest",
+    "eslint": "^9.12.0",
+    "eslint-plugin-react": "^7.37.1",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.8.0"
   }
 }
